@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mark Lawson — Creative Director</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --fg: #f0efe9;
+    --muted: #7a7a72;
+    --accent: #d4ff00;
+    --card-bg: #141414;
+    --border: #222;
+    --radius: 12px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 24px 48px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.4s;
+  }
+  nav.scrolled { border-bottom-color: var(--border); }
+
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1.25rem;
+    letter-spacing: -0.03em;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent); }
+
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    font-size: 0.85rem; font-weight: 500;
+    color: var(--muted); text-decoration: none;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--fg); }
+
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 24px;
+    background: var(--accent); color: var(--bg);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    border: none; border-radius: 100px;
+    cursor: pointer; text-decoration: none;
+    transition: transform 0.3s var(--ease), box-shadow 0.3s;
+  }
+  .contact-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 30px rgba(212,255,0,0.25);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 160px 48px 60px;
+  }
+
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    font-weight: 300;
+    line-height: 1.35;
+    letter-spacing: -0.03em;
+    max-width: 960px;
+    color: var(--muted);
+    opacity: 0; transform: translateY(30px);
+    animation: fadeUp 0.8s 0.5s var(--ease) forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SECTION BASICS ─── */
+  section { padding: 120px 48px; }
+
+  .section-label {
+    font-size: 0.75rem; font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+
+  /* ─── FILTER BAR ─── */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .filter-btn {
+    padding: 10px 22px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem; font-weight: 500;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+  }
+  .filter-btn:hover {
+    color: var(--fg);
+    border-color: #444;
+  }
+  .filter-btn.active {
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ─── PROJECT GRID ─── */
+  #work { padding-top: 120px; padding-bottom: 60px; }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  /* filter transitions */
+  .project-card.filter-hidden, .social-row.filter-hidden { display: none; }
+  .project-card.filter-fade {
+    animation: cardFadeIn 0.45s var(--ease) forwards;
+  }
+  @keyframes cardFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .project-card {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--card-bg);
+    aspect-ratio: 4 / 3;
+    transition: transform 0.5s var(--ease);
+  }
+  .project-card:hover { transform: scale(0.985); }
+
+  .project-card .thumb {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s var(--ease), filter 0.4s;
+  }
+  .project-card:hover .thumb {
+    transform: scale(1.05);
+    filter: brightness(0.7);
+  }
+
+  /* placeholder pattern for empty slots */
+  .placeholder-img {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background:
+      linear-gradient(135deg, #1a1a1a 25%, transparent 25%),
+      linear-gradient(225deg, #1a1a1a 25%, transparent 25%),
+      linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+      linear-gradient(315deg, #1a1a1a 25%, transparent 25%);
+    background-size: 40px 40px;
+    background-position: 20px 0, 20px 0, 0 0, 0 0;
+    background-color: #111;
+    transition: transform 0.6s var(--ease), filter 0.4s;
+  }
+  .project-card:hover .placeholder-img {
+    transform: scale(1.05);
+    filter: brightness(0.7);
+  }
+  .placeholder-img span {
+    font-size: 0.75rem; color: var(--muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    background: rgba(10,10,10,0.8); padding: 8px 16px;
+    border-radius: 6px;
+  }
+
+  .project-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 32px;
+    background: linear-gradient(to top, rgba(10,10,10,0.95) 0%, transparent 100%);
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.4s var(--ease);
+  }
+  .project-card:hover .project-overlay {
+    transform: translateY(0); opacity: 1;
+  }
+  .project-overlay h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.4rem; font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .project-overlay .project-tags {
+    display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .project-overlay .tag {
+    font-size: 0.7rem; font-weight: 500;
+    color: var(--accent);
+    background: rgba(212,255,0,0.1);
+    padding: 4px 12px; border-radius: 100px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .project-overlay .year {
+    font-size: 0.75rem; color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* social 3-up row */
+  .social-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .social-row .project-overlay:only-child {
+    grid-column: 1 / -1;
+  }
+  .social-card {
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--card-bg);
+  }
+  .social-card img {
+    width: 100%; height: auto;
+    display: block;
+    border-radius: var(--radius);
+    transition: transform 0.6s var(--ease);
+  }
+  .social-card:hover img {
+    transform: scale(1.03);
+  }
+
+  /* featured card spans full width */
+  .project-card.featured {
+    grid-column: 1 / -1;
+    aspect-ratio: 21 / 9;
+  }
+
+  /* video card click layer */
+  .project-card .click-layer {
+    position: absolute; inset: 0; z-index: 2;
+    cursor: pointer;
+  }
+
+  /* native video in cards */
+  .project-card video.thumb {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s var(--ease), filter 0.4s;
+  }
+  .project-card:hover video.thumb {
+    transform: scale(1.05);
+    filter: brightness(0.7);
+  }
+
+  /* native video in modal */
+  .modal-native-video {
+    width: 100%; aspect-ratio: 16/9;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    background: #000;
+  }
+  .modal-native-video video {
+    width: 100%; height: 100%;
+    object-fit: contain;
+  }
+
+  /* play icon on video cards */
+  .project-card .play-icon {
+    position: absolute;
+    bottom: 32px; right: 32px;
+    z-index: 3;
+    width: 40px; height: 40px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+    pointer-events: none;
+  }
+  .project-card .play-icon svg { margin-left: 2px; width: 14px; height: 14px; }
+  .project-card:hover .play-icon { opacity: 1; }
+
+  /* video embed in modal */
+  .modal-video {
+    width: 100%; aspect-ratio: 16/9;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+  }
+  .modal-video iframe {
+    width: 100%; height: 100%; border: 0;
+  }
+
+  /* ─── PROJECT DETAIL MODAL ─── */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  .modal-backdrop.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    position: fixed; z-index: 201;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: min(90vw, 1000px);
+    max-height: 85vh;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow-y: auto;
+    opacity: 0; pointer-events: none;
+    transition: all 0.4s var(--ease);
+  }
+  .modal-backdrop.open + .modal,
+  .modal.open { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
+
+  .modal-close {
+    position: sticky; top: 20px; float: right; margin: 20px 20px 0 0;
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border);
+    border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--fg); font-size: 1.2rem;
+    transition: background 0.3s;
+    z-index: 10;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.15); }
+
+  .modal-hero-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #1a1a1a, #222);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 16px 16px 0 0;
+  }
+  .modal-hero-placeholder span {
+    font-size: 0.85rem; color: var(--muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  .modal-body { padding: 48px; }
+  .modal-body h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem; font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .modal-body .modal-meta {
+    display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .modal-body .modal-meta span {
+    font-size: 0.8rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .modal-body .modal-desc {
+    margin-top: 32px;
+    font-size: 1rem; line-height: 1.8;
+    color: #bbb;
+    max-width: 640px;
+  }
+  .modal-body .modal-gallery {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-top: 40px;
+  }
+  .modal-body .modal-gallery .gallery-slot {
+    aspect-ratio: 4/3;
+    background: #1a1a1a;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-body .modal-gallery .gallery-slot span {
+    font-size: 0.7rem; color: var(--muted);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  /* ─── ABOUT ─── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .about-photo {
+    width: 100%; aspect-ratio: 3/4;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .about-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .about-text p {
+    font-size: 1.05rem; line-height: 1.85;
+    color: #bbb; margin-bottom: 24px;
+    font-weight: 300;
+  }
+
+  .client-logos {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .client-logos h4 {
+    font-size: 0.75rem; font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .logo-row {
+    display: flex; gap: 40px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .logo-row .client-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem; font-weight: 600;
+    color: #555;
+    transition: color 0.3s;
+  }
+  .logo-row .client-name:hover { color: var(--fg); }
+
+  /* ─── CONTACT ─── */
+  #contact {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 120px 48px 80px;
+  }
+  #contact .section-title { margin-bottom: 20px; }
+  #contact p {
+    color: var(--muted); font-size: 1rem;
+    max-width: 440px; margin: 0 auto 40px;
+    font-weight: 300;
+  }
+  .contact-links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .contact-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--fg);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+  }
+  .contact-link:hover {
+    border-color: var(--accent);
+    background: rgba(212,255,0,0.06);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem; color: var(--muted);
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .mobile-only { display: none; }
+  .mobile-only-desc { display: none; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { gap: 20px; }
+    section, .hero { padding-left: 24px; padding-right: 24px; }
+    .project-grid { grid-template-columns: 1fr; }
+    .project-card.featured { aspect-ratio: 4/3; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .social-row { grid-template-columns: 1fr !important; }
+    footer { flex-direction: column; gap: 12px; text-align: center; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links a:not(.contact-btn) { display: none; }
+    .hero h1 { font-size: 1.5rem; line-height: 1.25; }
+    .hero { padding-top: 100px !important; padding-bottom: 30px !important; }
+    section { padding-top: 60px !important; padding-bottom: 40px !important; }
+    #work { padding-top: 60px !important; }
+    .project-grid { gap: 12px; }
+    .social-row { gap: 12px !important; margin-top: 20px !important; }
+    .project-card { margin-top: 0 !important; }
+    .project-overlay h3 { line-height: 1.2; }
+    .mobile-only { display: inline; }
+    .mobile-only-desc { display: grid !important; }
+    .paired-descriptors .project-overlay:last-child { display: none; }
+    .filter-bar { margin-bottom: 24px; }
+    .modal-body { padding: 24px; }
+    .modal-body .modal-gallery { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo">Mark Lawson<span>.</span></a>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact" class="contact-btn">Get in touch</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Hi, I'm Mark.<br class="mobile-only"> I'm a Creative Director based in San Francisco. I've spent my career at agencies and tech companies making work that solves problems and gets noticed. I'm currently available for freelance, fractional, and select full-time roles.</h1>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="section-label">Selected Work</div>
+  <h2 class="section-title">Projects</h2>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="tv-video">TV / Video</button>
+    <button class="filter-btn" data-filter="digital-social">Digital / Social</button>
+    <button class="filter-btn" data-filter="print">OOH / Print</button>
+    <button class="filter-btn" data-filter="branding">Branding</button>
+    <button class="filter-btn" data-filter="pitch">Pitch Work</button>
+  </div>
+
+  <div class="project-grid">
+
+    <!-- CHIPOTLE — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="tv-video" style="grid-template-columns: 1fr; margin-top: 30px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Chipotle</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">I helped pitch and win the Chipotle account with the "As Real As It Gets" campaign which helped to turn<br>around their business. It was all about making Chipotle stand for honesty and transparency to win back trust.</p>
+        <div class="project-tags"><span class="tag">TV / Video</span></div>
+        <div class="year">Agency: Venables Bell &amp; Partners &nbsp;|&nbsp; Cannes Lions Silver &nbsp;|&nbsp; Communication Arts</div>
+      </div>
+    </div>
+
+    <!-- CHIPOTLE: BOOK — FEATURED -->
+    <div class="project-card featured reveal" data-project="0" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="images/book.png" alt="Chipotle: Book">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- CHIPOTLE: BIG DREAMS -->
+    <div class="project-card reveal" data-project="1" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="images/big-dreams.png" alt="Chipotle: Big Dreams">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- CHIPOTLE: MUSICIAN -->
+    <div class="project-card reveal" data-project="2" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="images/musician.png" alt="Chipotle: Musician">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- SUNRUN — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="tv-video" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Sunrun</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">While we can all agree that doing something great for the environment makes us feel good, we found that most people are motivated<br>by having an alternative to big power companies, and even more motivated if they can save a few bucks on their electricity bills.</p>
+        <div class="project-tags"><span class="tag">TV / Video</span></div>
+        <div class="year">Agency: HEAT</div>
+      </div>
+    </div>
+
+    <!-- SUNRUN: DOLPHIN BABIES -->
+    <div class="project-card reveal" data-project="3" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="https://vumbnail.com/42419446.jpg" alt="Sunrun: Dolphin Babies">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- SUNRUN: FLAX SEEDS -->
+    <div class="project-card reveal" data-project="4" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="https://vumbnail.com/42412691.jpg" alt="Sunrun: Flax Seeds">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- SUNRUN: VOICE MAN — FEATURED -->
+    <div class="project-card featured reveal" data-project="5" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="https://vumbnail.com/42417452.jpg" alt="Sunrun: Voice Man">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- BANK OF THE WEST — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="tv-video" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Bank of the West</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">We pitched and won the Bank of the West account and helped turn around their business with the "Go West" campaign. We wanted to celebrate the optimism and hard-working entrepreneurialism<br>of the bank's customers. In this context, the west is more than a place that's thousands of miles away from the big banks in the east, it's also a mentality that's as far away from Wall Street as it gets.</p>
+        <div class="project-tags"><span class="tag">TV / Video</span></div>
+        <div class="year">Agency: HEAT</div>
+      </div>
+    </div>
+
+    <!-- BANK OF THE WEST: AZ WINE WORKS -->
+    <div class="project-card reveal" data-project="6" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="https://vumbnail.com/79844415.jpg" alt="Bank of the West: AZ Wine Works">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- BANK OF THE WEST: BRITISH MOTORS -->
+    <div class="project-card reveal" data-project="7" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="https://vumbnail.com/79845434.jpg" alt="Bank of the West: British Motors">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- BANK OF THE WEST: INTERSTATE HOME SERVICES — FEATURED -->
+    <div class="project-card featured reveal" data-project="8" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="https://vumbnail.com/79845160.jpg" alt="Bank of the West: Interstate Home Services">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- SLACK + EA SPORTS — DESCRIPTORS (desktop: side by side) -->
+    <div class="social-row reveal paired-descriptors" data-categories="tv-video" style="grid-template-columns: repeat(2, 1fr); align-items: start; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Slack: Traffic</h3>
+        <div class="project-tags"><span class="tag">TV / Video</span></div>
+        <div class="year">Agency: In-house</div>
+      </div>
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>EA Sports: Skate</h3>
+        <div class="project-tags"><span class="tag">TV / Video</span></div>
+        <div class="year">Agency: OWNP-See</div>
+      </div>
+    </div>
+
+    <!-- SLACK: TRAFFIC -->
+    <div class="project-card reveal" data-project="9" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="images/slack-thumb.png" alt="Slack: Traffic">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- EA SPORTS — DESCRIPTOR (mobile only) -->
+    <div class="social-row reveal mobile-only-desc" data-categories="tv-video" style="grid-template-columns: 1fr; margin-top: 20px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>EA Sports: Skate</h3>
+        <div class="project-tags"><span class="tag">TV / Video</span></div>
+        <div class="year">Agency: OWNP-See</div>
+      </div>
+    </div>
+
+    <!-- EA SPORTS: SKATE -->
+    <div class="project-card reveal" data-project="10" data-categories="tv-video">
+      <div class="click-layer"></div>
+      <img class="thumb" src="images/skate-thumb.png" alt="EA Sports: Skate">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- KENDALL JACKSON — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="digital-social" style="grid-template-columns: 1fr; margin-top: 30px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Kendall Jackson: Chardonnay</h3>
+        <div class="project-tags"><span class="tag">Digital / Social</span></div>
+        <div class="year">Agency: HEAT</div>
+      </div>
+    </div>
+    <!-- KENDALL JACKSON — 3-UP ROW -->
+    <div class="social-row reveal" data-categories="digital-social">
+      <div class="social-card" data-project="11">
+        <img src="images/kj-1.png" alt="Kendall Jackson Wines">
+      </div>
+      <div class="social-card" data-project="12">
+        <img src="images/kj-2.png" alt="Kendall Jackson Wines">
+      </div>
+      <div class="social-card" data-project="13">
+        <img src="images/kj-3.png" alt="Kendall Jackson Wines">
+      </div>
+    </div>
+
+    <!-- FRESHWORKS IPO — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="digital-social" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Freshworks IPO</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">Freshworks is a customer service software that makes it super-easy to deliver better experiences for customers and employees. To make a splash for their IPO in 2022, Freshworks wanted a new look/feel and messaging platform to communicate their unique ability to turn negative experiences into positive ones.</p>
+        <div class="project-tags"><span class="tag">Digital / Social</span></div>
+        <div class="year">Agency: Optimism BH</div>
+      </div>
+    </div>
+    <!-- FRESHWORKS IPO — VIDEO -->
+    <div class="project-card featured reveal" data-project="11" data-categories="digital-social">
+      <div class="click-layer"></div>
+      <img class="thumb" src="images/freshworks-thumb.jpg" alt="Freshworks IPO">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- BETTERUP — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="digital-social" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>BetterUp: Covid-19 Social</h3>
+        <div class="project-tags"><span class="tag">Digital / Social</span></div>
+        <div class="year">Agency: In-House</div>
+      </div>
+    </div>
+    <!-- BETTERUP: SOCIAL — 4 ACROSS -->
+    <div class="social-row reveal" data-categories="digital-social" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="social-card">
+        <img src="images/betterup-1.png" alt="BetterUp Social">
+      </div>
+      <div class="social-card">
+        <img src="images/betterup-2.png" alt="BetterUp Social">
+      </div>
+      <div class="social-card">
+        <img src="images/betterup-3.png" alt="BetterUp Social">
+      </div>
+      <div class="social-card">
+        <img src="images/betterup-4.png" alt="BetterUp Social">
+      </div>
+    </div>
+
+    <!-- SALESFORCE: DOWN TO EARTH CONVERSATIONS — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="digital-social" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Salesforce: Down To Earth Conversations</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">Salesforce believes in using business as a platform for change, for people and the planet. Team Earth, a team within Salesforce, rallies businesses to use their power, influence, and resources to create a better, more equitable, sustainable future for all. To tease the launch of Salesforce's Net Zero Marketplace, we created a series of videos that would be pushed out onto all of their social channels. Along the way, I helped Team Earth with other important social initiatives.</p>
+        <div class="project-tags"><span class="tag">Digital / Social</span></div>
+        <div class="year">Agency: In-House</div>
+      </div>
+    </div>
+    <!-- SALESFORCE: DOWN TO EARTH CONVERSATIONS — VIDEO -->
+    <div class="project-card featured reveal" data-project="30" data-categories="digital-social">
+      <div class="click-layer"></div>
+      <img class="thumb" src="images/salesforce-dte-thumb.png" alt="Salesforce: Down To Earth Conversations">
+      <div class="play-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div>
+    </div>
+
+    <!-- UNILEVER: LIPTON ONION DIP -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto; margin-top: 30px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Lipton Onion Dip: Men Behaving Badly</h3>
+        <div class="project-tags"><span class="tag">OOH / Print</span></div>
+        <div class="year">Agency: BBH NY &nbsp;|&nbsp; Cannes Lions Gold &nbsp;|&nbsp; Communication Arts</div>
+      </div>
+      <div class="social-card" data-project="15">
+        <img src="images/lipton-1.jpg" alt="Lipton Onion Dip">
+      </div>
+      <div class="social-card" data-project="16">
+        <img src="images/lipton-2.jpg" alt="Lipton Onion Dip">
+      </div>
+    </div>
+
+    <!-- GOOGLE MEASUREMENT SUITE -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Google Measurement Suite</h3>
+        <div class="project-tags"><span class="tag">OOH / Print</span></div>
+        <div class="year">Agency: In-House</div>
+      </div>
+      <div class="social-card" data-project="17">
+        <img src="images/google-1.jpg" alt="Google Measurement Suite">
+      </div>
+      <div class="social-card">
+        <img src="images/google-2.jpg" alt="Google Measurement Suite">
+      </div>
+      <div class="social-card">
+        <img src="images/google-3.jpg" alt="Google Measurement Suite">
+      </div>
+    </div>
+
+    <!-- VISA DIRECT — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Visa Direct Global Campaign</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">Visa is the company we all know and love to pay for anything we need. With Visa Direct, millions of people and businesses around the globe can now use Visa to pay and be paid. Made created Visa Direct's first global campaign emphasizing the transformative nature of this new push payment solution.</p>
+        <div class="project-tags"><span class="tag">OOH / Print</span></div>
+        <div class="year">Agency: Made Studios</div>
+      </div>
+    </div>
+    <!-- VISA DIRECT — ROW 1: 2 UP -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: repeat(2, 1fr); max-width: 1200px; margin: 0 auto;">
+      <div class="social-card">
+        <img src="images/visa-1.png" alt="Visa Direct">
+      </div>
+      <div class="social-card">
+        <img src="images/visa-2.png" alt="Visa Direct">
+      </div>
+    </div>
+    <!-- VISA DIRECT — ROW 2: 2 UP -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: repeat(2, 1fr); max-width: 1200px; margin: 0 auto;">
+      <div class="social-card">
+        <img src="images/visa-3.png" alt="Visa Direct">
+      </div>
+      <div class="social-card">
+        <img src="images/visa-4.png" alt="Visa Direct Print">
+      </div>
+    </div>
+
+    <!-- MURPHY-GOODE WINES — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Murphy-Goode: Man-iversary</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">Every bromance needs a Man-iversary. Murphy Goode has been making great wine for thirty years (and they haven't raised their pinkies even once). We helped them celebrate their thirtieth Man-iversary in style.</p>
+        <div class="project-tags"><span class="tag">OOH / Print</span></div>
+        <div class="year">Agency: HEAT</div>
+      </div>
+    </div>
+    <!-- MURPHY-GOODE WINES: 2-UP -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: repeat(2, 1fr); max-width: 1200px; margin: 0 auto;">
+      <div class="social-card">
+        <img src="images/mg-1.jpg" alt="Murphy-Goode Wines">
+      </div>
+      <div class="social-card">
+        <img src="images/mg-2.jpg" alt="Murphy-Goode Wines">
+      </div>
+    </div>
+    <!-- MURPHY-GOODE WINES: FULL WIDTH -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: 1fr; max-width:1200px; margin:0 auto;">
+      <div class="social-card">
+        <img src="images/mg-3.jpg" alt="Murphy-Goode Wines">
+      </div>
+    </div>
+
+    <!-- SUNRUN OOH -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Sunrun</h3>
+        <div class="project-tags"><span class="tag">OOH / Print</span></div>
+        <div class="year">Agency: HEAT</div>
+      </div>
+      <div class="social-card">
+        <img src="images/sunrun-ooh-1.jpg" alt="Sunrun">
+      </div>
+      <div class="social-card">
+        <img src="images/sunrun-ooh-3.jpg" alt="Sunrun">
+      </div>
+    </div>
+
+    <!-- SALESFORCE: GIVING TUESDAY — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="digital-social" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Salesforce: Giving Tuesday</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">Charity and non-profit organizations don't have the same following that Salesforce does. So for Giving Tuesday we gave our social media platform to ten different non-profit organizations, increasing their exposure and driving donations. We extended the giving and the campaign, providing non-profits access to our followers for three additional Tuesdays, following the initial launch.</p>
+        <div class="project-tags"><span class="tag">Digital / Social</span></div>
+        <div class="year">Agency: In-House</div>
+      </div>
+    </div>
+    <!-- SALESFORCE: GIVING TUESDAY — IMAGES -->
+    <div class="social-row reveal" data-categories="digital-social" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="social-card">
+        <img src="images/salesforce-1.png" alt="Salesforce: Giving Tuesday">
+      </div>
+      <div class="social-card">
+        <img src="images/salesforce-2.png" alt="Salesforce: Giving Tuesday">
+      </div>
+    </div>
+
+    <!-- HUFFINGTON POST — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="digital-social" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Huffington Post</h3>
+        <div class="project-tags"><span class="tag">Digital / Social</span></div>
+        <div class="year">Agency: HEAT</div>
+      </div>
+    </div>
+    <!-- HUFFINGTON POST — IMAGE -->
+    <div class="project-card featured reveal" data-project="14" data-categories="digital-social" style="aspect-ratio:auto;">
+      <img class="thumb" src="images/huffpost.jpg" alt="Huffington Post" style="position:relative; height:auto;">
+    </div>
+
+    <!-- INTERCOM — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="branding" style="grid-template-columns: 1fr; margin-top: 30px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Intercom: Rebrand</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">In exploring ways to update the Intercom brand to align with its new mission, we began with the logo, which was built around the metaphor of a speaker. Through the vents of the speaker comes the goodness of communication and engagement between a business and its customers. We built an entire design system around elements of the logo that feels fresh and provides a flexible container and backdrop for featuring products, demos, etc.</p>
+        <div class="project-tags"><span class="tag">Branding</span></div>
+        <div class="year">Agency: JMS</div>
+      </div>
+    </div>
+    <!-- INTERCOM — IMAGES -->
+    <div class="social-row reveal" data-categories="branding">
+      <div class="social-card">
+        <img src="images/intercom-1.jpg" alt="Intercom: Rebrand">
+      </div>
+      <div class="social-card">
+        <img src="images/intercom-2.jpg" alt="Intercom: Rebrand">
+      </div>
+      <div class="social-card">
+        <img src="images/intercom-3.jpg" alt="Intercom: Rebrand">
+      </div>
+    </div>
+
+    <!-- GEKKOVET — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="branding" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>GekkoVet: Rebrand and Website</h3>
+        <div class="project-tags"><span class="tag">Branding</span></div>
+        <div class="year">Agency: R/GA</div>
+      </div>
+    </div>
+    <!-- GEKKOVET — ROW 1 -->
+    <div class="social-row reveal" data-categories="branding">
+      <div class="social-card">
+        <img src="images/gekkovet-4.jpg" alt="GekkoVet Logo">
+      </div>
+      <div class="social-card">
+        <img src="images/gekkovet-5.jpg" alt="GekkoVet Typography">
+      </div>
+      <div class="social-card">
+        <img src="images/gekkovet-6.jpg" alt="GekkoVet Color Palette">
+      </div>
+    </div>
+    <!-- GEKKOVET — ROW 2 -->
+    <div class="social-row reveal" data-categories="branding">
+      <div class="social-card">
+        <img src="images/gekkovet-7.jpg" alt="GekkoVet Color Palette 2">
+      </div>
+      <div class="social-card">
+        <img src="images/gekkovet-3.png" alt="GekkoVet MacBook">
+      </div>
+    </div>
+
+    <!-- SNIPPET SENTRY — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="branding" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Snippet Sentry: Rebrand</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">SnippetSentry provides visibility and security into all your employees mobile communications data across messaging apps and channels. To establish themselves as a modern leader in the space, we provided them with an updated logo that quickly, communicates "safe messaging" that extends to a new look/feel and styleguide.</p>
+        <div class="project-tags"><span class="tag">Branding</span></div>
+        <div class="year">Agency: Nayamode</div>
+      </div>
+    </div>
+    <!-- SNIPPET SENTRY — IMAGES -->
+    <div class="social-row reveal" data-categories="branding" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="social-card">
+        <img src="images/snippet-1.jpg" alt="Snippet Sentry">
+      </div>
+      <div class="social-card">
+        <img src="images/snippet-2.jpg" alt="Snippet Sentry">
+      </div>
+    </div>
+
+    <!-- LEGEND PLUMBING — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="branding" style="grid-template-columns: 1fr; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Legend Plumbing</h3>
+        <div class="project-tags"><span class="tag">Branding</span></div>
+        <div class="year">Agency: Myself</div>
+      </div>
+    </div>
+    <!-- LEGEND PLUMBING — IMAGE -->
+    <div class="social-row reveal" data-categories="branding" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto;">
+      <div class="social-card">
+        <img src="images/legend-plumbing.jpg" alt="Legend Plumbing">
+      </div>
+    </div>
+
+    <!-- PEET'S + CA ACADEMY — SIDE BY SIDE WITH CAPTIONS UNDERNEATH -->
+    <div class="social-row reveal" data-categories="print" style="grid-template-columns: repeat(2, 1fr); align-items: start; max-width: 1200px; margin: 0 auto; margin-top: 60px;">
+      <div>
+        <div class="social-card" style="aspect-ratio: 3/4; overflow: hidden;">
+          <img src="images/peets-50.jpg" alt="Peet's Coffee 50th Anniversary Poster" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+          <h3>Peet's Coffee:<br class="mobile-only">50th Anniversary Poster</h3>
+          <div class="project-tags"><span class="tag">OOH / Print</span></div>
+          <div class="year">Agency: Cutwater</div>
+        </div>
+      </div>
+      <div>
+        <div class="social-card" style="aspect-ratio: 3/4; overflow: hidden;">
+          <img src="images/ca-academy-extreme.jpg" alt="California Academy of Sciences: Extreme Mammals" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+          <h3>California Academy of Sciences: Extreme Mammals</h3>
+          <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">To announce the arrival of the new Extreme Mammals exhibit, we had a giant packing crate built and taken for a tour of the city on a flatbed. The crate was accompanied by CAS staff and included one staff member inside the crate to pound on its walls and scare passersby—it was a hit.</p>
+          <div class="project-tags"><span class="tag">OOH / Print</span></div>
+          <div class="year">Agency: HEAT</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NATIONAL PSYCHEDELICS ASSOCIATION — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="pitch" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto; margin-top: 30px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>National Psychedelics Association</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">Our culture is finally opening up to the benefits of psilocybin mushrooms and Oregon was the first state to legalize their therapeutic use. Our brief was to invite people to reconsider their perception of mushrooms as a recreational substance and simultaneously establish Oregon as the place for mushroom experiences.</p>
+        <div class="project-tags"><span class="tag">Pitch Work</span></div>
+        <div class="year">Agency: Wildtype</div>
+      </div>
+    </div>
+    <!-- NATIONAL PSYCHEDELICS ASSOCIATION — STACKED -->
+    <div class="social-row reveal" data-categories="pitch" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto;">
+      <div class="social-card">
+        <img src="images/nps-1.gif" alt="National Psychedelics Association">
+      </div>
+      <div class="social-card">
+        <img src="images/nps-2.jpg" alt="National Psychedelics Association">
+      </div>
+    </div>
+    <!-- NATIONAL PSYCHEDELICS ASSOCIATION — 2-UP -->
+    <div class="social-row reveal" data-categories="pitch" style="grid-template-columns: repeat(2, 1fr); max-width: 1200px; margin: 0 auto;">
+      <div class="social-card">
+        <img src="images/nps-3.jpg" alt="National Psychedelics Association">
+      </div>
+      <div class="social-card">
+        <img src="images/nps-4.jpg" alt="National Psychedelics Association">
+      </div>
+    </div>
+
+    <!-- BAYER HERSPITAL — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="pitch" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>Bayer: Herspital</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">Women's health has been undervalued, under-served, and under-studied… forever. Around the world, women struggle to be heard by their doctors. Many women don't have family planning or reproductive freedom. Menopause goes unsupported. Heart attack symptoms get dismissed. The inequities cut across borders and cultures. It's time for a big, bold move on a global scale to finally make change for women's health.<br><br>Introducing Herspital. Healthcare built for women, by women.</p>
+        <div class="project-tags"><span class="tag">Pitch Work</span></div>
+        <div class="year">Agency: Wildtype</div>
+      </div>
+    </div>
+    <!-- BAYER HERSPITAL — IMAGES -->
+    <div class="social-row reveal" data-categories="pitch" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto;">
+      <div class="social-card">
+        <img src="images/herspital-1.png" alt="Bayer Herspital">
+      </div>
+      <div class="social-card">
+        <img src="images/herspital-2.jpg" alt="Bayer Herspital">
+      </div>
+    </div>
+
+    <!-- HPV AWARENESS — DESCRIPTOR -->
+    <div class="social-row reveal" data-categories="pitch" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto; margin-top: 60px;">
+      <div class="project-overlay" style="opacity:1; transform:none; position:relative; background:none; padding:16px 0 0;">
+        <h3>HPV Awareness</h3>
+        <p style="font-size:0.85rem; color:var(--muted); margin-top:8px; line-height:1.5;">How do you convince French 18-26 year olds to get vaccinated against HPV, linked to many cancers later in life? Here's how. Overnight in college towns across the country, we erect statues of Rodin's iconic "The Kiss" with an eye-popping twist — glaring penile warts.<br><br>The French love art. The French love love. And nothing makes love go limp like genital warts.</p>
+        <div class="project-tags"><span class="tag">Pitch Work</span></div>
+        <div class="year">Agency: Digitas Health</div>
+      </div>
+    </div>
+    <!-- HPV AWARENESS — IMAGE -->
+    <div class="social-row reveal" data-categories="pitch" style="grid-template-columns: 1fr; max-width: 1200px; margin: 0 auto;">
+      <div class="social-card">
+        <img src="images/hpv.png" alt="HPV Awareness">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About</div>
+  <h2 class="section-title">The long version</h2>
+  <div class="about-grid">
+    <div class="about-photo reveal">
+      <img src="images/headshot.jpg" alt="Mark Lawson">
+    </div>
+    <div class="about-text reveal">
+      <p>I'm a Creative Director with an Art Direction background but I've also been writing for years. I equally like concepting, making and presenting the work as I do leading and mentoring teams, because watching someone else crack a brief can be just as fulfilling.</p>
+      <p>My inspiration doesn't come from award annuals or current trends. It comes from paying attention with my head up out of my phone and watching life. Human interactions, observing the way people behave and the world around me.</p>
+      <p>I've worked on everything from big consumer brands to small tech startups. Whether B2B, B2C, top of the funnel, bottom of the funnel, a big brand pitch, or a set of online banners, it's all problem solving, and that's what I enjoy most about what I do.</p>
+      <p>Agency-wise, I've been at BBH NY, JWT, and HEAT, with freelance stints just about everywhere in between. Pereira O'Dell, Venables Bell, Cutwater, Preacher, and a few others I'm probably forgetting. I've also worked client-side as Slack's first Creative Director and most recently as Creative Director at BetterUp.</p>
+      <p>Industry awards used to be really important to me, but less so now. Yes, I have them.</p>
+      <p>I'm collaborative, easy to work with, and I'd love to work with you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">Contact</div>
+  <h2 class="section-title">Let's talk</h2>
+  <div class="contact-links">
+    <button class="contact-link" id="copyEmailBtn" onclick="navigator.clipboard.writeText('marklawsoninc@gmail.com').then(() => { const btn = document.getElementById('copyEmailBtn'); btn.innerHTML = btn.innerHTML.replace('Email', 'Copied!'); setTimeout(() => { btn.innerHTML = btn.innerHTML.replace('Copied!', 'Email'); }, 2000); })">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      Email
+    </button>
+    <a href="https://www.linkedin.com/in/marklawsonadsf/" target="_blank" class="contact-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      LinkedIn
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>&copy; 2026 Mark Lawson Inc. All rights reserved.</span>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="modal" id="modal">
+  <button class="modal-close" id="modalClose">&#10005;</button>
+  <div class="modal-media" id="modalMedia">
+    <div class="modal-hero-placeholder"><span>Project hero image</span></div>
+  </div>
+  <div class="modal-body">
+    <h2 id="modalTitle">Project Title</h2>
+    <div class="modal-meta">
+      <span id="modalClient">Client Name</span>
+      <span id="modalYear">2026</span>
+      <span id="modalRole">Creative Director</span>
+    </div>
+    <div class="modal-desc" id="modalDesc">
+      <p>Brief description of the project.</p>
+    </div>
+    <div class="modal-gallery">
+      <div class="gallery-slot"><span>Gallery image 1</span></div>
+      <div class="gallery-slot"><span>Gallery image 2</span></div>
+      <div class="gallery-slot"><span>Gallery image 3</span></div>
+      <div class="gallery-slot"><span>Gallery image 4</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── PROJECT DATA ─── //
+  const projects = [
+    {
+      title: "Chipotle: Book",
+      client: "Chipotle",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "",
+      video: null,
+      mp4: "https://cdn.cntrl.site/projects/01KEMT3H3C3HE7W6MV77CNAR59/articles-assets/01KFH3BZRJTZJYJ7N26XSTFCJ7.mp4"
+    },
+    {
+      title: "Chipotle: Big Dreams",
+      client: "Chipotle",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "",
+      video: null,
+      mp4: "https://cdn.cntrl.site/projects/01KEMT3H3C3HE7W6MV77CNAR59/articles-assets/01KFH05T0J9VJN30Y7Q213C0WB.mp4"
+    },
+    {
+      title: "Chipotle: Musician",
+      client: "Chipotle",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "",
+      video: null,
+      mp4: "https://cdn.cntrl.site/projects/01KEMT3H3C3HE7W6MV77CNAR59/articles-assets/01KG1FH0E7H5N9SH3S6SP35Z6V.mp4"
+    },
+    {
+      title: "Sunrun: Dolphin Babies",
+      client: "Sunrun",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "While we can all agree that doing something great for the environment makes us feel good, we found that most people are motivated by having an alternative to big power companies — and even more motivated if they can save a few bucks on their electricity bills.",
+      video: "https://player.vimeo.com/video/42419446"
+    },
+    {
+      title: "Sunrun: Flax Seeds",
+      client: "Sunrun",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "While we can all agree that doing something great for the environment makes us feel good, we found that most people are motivated by having an alternative to big power companies — and even more motivated if they can save a few bucks on their electricity bills.",
+      video: "https://player.vimeo.com/video/42412691"
+    },
+    {
+      title: "Sunrun: Voice Man",
+      client: "Sunrun",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "While we can all agree that doing something great for the environment makes us feel good, we found that most people are motivated by having an alternative to big power companies — and even more motivated if they can save a few bucks on their electricity bills.",
+      video: "https://player.vimeo.com/video/42417452"
+    },
+    {
+      title: "Bank of the West: AZ Wine Works",
+      client: "Bank of the West",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "",
+      video: "https://player.vimeo.com/video/79844415"
+    },
+    {
+      title: "Bank of the West: British Motors",
+      client: "Bank of the West",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "",
+      video: "https://player.vimeo.com/video/79845434"
+    },
+    {
+      title: "Bank of the West: Interstate Home Services",
+      client: "Bank of the West",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "",
+      video: "https://player.vimeo.com/video/79845160"
+    },
+    {
+      title: "Slack: Traffic",
+      client: "Slack",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "",
+      video: "https://player.vimeo.com/video/224593393"
+    },
+    {
+      title: "EA Sports: Skate",
+      client: "EA Sports",
+      year: "",
+      role: "Creative Director",
+      tags: ["TV / Video"],
+      desc: "",
+      video: "https://player.vimeo.com/video/14242360?share=copy&fl=sv&fe=ci"
+    },
+    {
+      title: "Freshworks IPO",
+      client: "Freshworks",
+      year: "",
+      role: "Creative Director",
+      tags: ["Digital / Social"],
+      desc: "Freshworks is a customer service software that makes it super-easy to deliver better experiences for customers and employees. To make a splash for their IPO in 2022, Freshworks wanted a new look/feel and messaging platform to communicate their unique ability to turn negative experiences into positive ones.",
+      mp4: "images/freshworks.mp4"
+    },
+    {
+      title: "Kendall Jackson: Chardonnay",
+      client: "Kendall Jackson",
+      year: "",
+      role: "Creative Director",
+      tags: ["Digital / Social"],
+      desc: ""
+    },
+    {
+      title: "Kendall Jackson: Chardonnay",
+      client: "Kendall Jackson",
+      year: "",
+      role: "Creative Director",
+      tags: ["Digital / Social"],
+      desc: ""
+    },
+    {
+      title: "Kendall Jackson: Chardonnay",
+      client: "Kendall Jackson",
+      year: "",
+      role: "Creative Director",
+      tags: ["Digital / Social"],
+      desc: ""
+    },
+    {
+      title: "Lipton Onion Dip: Men Behaving Badly",
+      client: "Unilever",
+      year: "",
+      role: "Creative Director",
+      tags: ["OOH / Print"],
+      desc: ""
+    },
+    {
+      title: "Lipton Onion Dip: Men Behaving Badly",
+      client: "Unilever",
+      year: "",
+      role: "Creative Director",
+      tags: ["OOH / Print"],
+      desc: ""
+    },
+    {
+      title: "Huffington Post",
+      client: "Huffington Post",
+      year: "",
+      role: "Creative Director",
+      tags: ["Digital / Social"],
+      desc: ""
+    }
+  ];
+
+  projects[30] = {
+    title: "Salesforce: Down To Earth Conversations",
+    client: "Salesforce",
+    year: "",
+    role: "Creative Director",
+    tags: ["Digital / Social"],
+    desc: "Salesforce believes in using business as a platform for change, for people and the planet. Team Earth, a team within Salesforce, rallies businesses to use their power, influence, and resources to create a better, more equitable, sustainable future for all. To tease the launch of Salesforce's Net Zero Marketplace, we created a series of videos that would be pushed out onto all of their social channels. Along the way, I helped Team Earth with other important social initiatives.",
+    video: "https://player.vimeo.com/video/1185909752"
+  };
+
+  // ─── NAV SCROLL ─── //
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ─── SCROLL REVEAL ─── //
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => observer.observe(el));
+
+  // ─── FILTER BAR ─── //
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const allCards = document.querySelectorAll('.project-card, .social-row');
+
+  let pitchUnlocked = false;
+  const PITCH_PASSWORD = 'privateeyes';
+
+  // Hide pitch items on initial load
+  allCards.forEach(card => {
+    const cats = card.dataset.categories || '';
+    if (cats.split(',').includes('pitch')) {
+      card.classList.add('filter-hidden');
+    }
+  });
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+
+      if (filter === 'pitch' && !pitchUnlocked) {
+        const pw = prompt('This section is password protected.\nEnter password:');
+        if (pw !== PITCH_PASSWORD) {
+          if (pw !== null) alert('Incorrect password.');
+          return;
+        }
+        pitchUnlocked = true;
+      }
+
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      allCards.forEach(card => {
+        const cats = card.dataset.categories || '';
+        const isPitch = cats.split(',').includes('pitch');
+        const match = (filter === 'all' || cats.split(',').includes(filter)) && (!isPitch || pitchUnlocked);
+
+        if (match) {
+          card.classList.remove('filter-hidden');
+          card.classList.add('filter-fade');
+          card.addEventListener('animationend', () => {
+            card.classList.remove('filter-fade');
+          }, { once: true });
+        } else {
+          card.classList.add('filter-hidden');
+          card.classList.remove('filter-fade');
+        }
+      });
+    });
+  });
+
+  // ─── MODAL ─── //
+  const backdrop = document.getElementById('modalBackdrop');
+  const modal = document.getElementById('modal');
+  const cards = document.querySelectorAll('.project-card');
+
+  cards.forEach(card => {
+    const clickTarget = card.querySelector('.click-layer') || card;
+    clickTarget.addEventListener('click', () => {
+      const i = parseInt(card.dataset.project);
+      const p = projects[i];
+      document.getElementById('modalTitle').textContent = p.title;
+      document.getElementById('modalClient').textContent = p.client;
+      document.getElementById('modalYear').textContent = p.year;
+      document.getElementById('modalRole').textContent = p.role;
+      document.getElementById('modalDesc').innerHTML = p.desc ? `<p>${p.desc}</p>` : '';
+
+      // swap media: vimeo, mp4, or placeholder
+      const mediaEl = document.getElementById('modalMedia');
+      if (p.video) {
+        mediaEl.innerHTML = `<div class="modal-video"><iframe src="${p.video}?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe></div>`;
+      } else if (p.mp4) {
+        mediaEl.innerHTML = `<div class="modal-native-video"><video src="${p.mp4}" controls autoplay></video></div>`;
+      } else {
+        mediaEl.innerHTML = `<div class="modal-hero-placeholder"><span>Project hero image</span></div>`;
+      }
+
+      backdrop.classList.add('open');
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeModal() {
+    backdrop.classList.remove('open');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    // stop any playing video
+    const mediaEl = document.getElementById('modalMedia');
+    const iframe = mediaEl.querySelector('iframe');
+    if (iframe) iframe.src = '';
+    const vid = mediaEl.querySelector('video');
+    if (vid) { vid.pause(); vid.src = ''; }
+  }
+  backdrop.addEventListener('click', closeModal);
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // ─── SMOOTH SCROLL ─── //
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+</body>
+</html>
